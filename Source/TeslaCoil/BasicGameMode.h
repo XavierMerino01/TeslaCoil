@@ -33,17 +33,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetPointCount() const;
 
-	UFUNCTION()
-	void SetPointCount(float newPointCount);
-
 	UFUNCTION(BlueprintPure)
 	float GetRoundTimeLeft() const;
-
-	UFUNCTION()
-	float GetPlayerHealth() const;
-
-	UFUNCTION()
-	void HealPlayer(float HealAmount);
 
 
 	UFUNCTION(BlueprintCallable)
@@ -57,6 +48,14 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game Mode")
 	TArray<FRoundInfo> RoundsInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UUserWidget* GameInterfaceWidget;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Game Mode")
+	void UIMaxHealthUpdate();
+
+	virtual void UIMaxHealthUpdate_Implementation();
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Game Mode")
 	void WaveOverBP(bool bIsOver);

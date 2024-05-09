@@ -25,23 +25,39 @@ public:
 
 	void StartGameShop();
 
+	void UpdatePoints(float Points);
+
+	UFUNCTION(BlueprintCallable)
+	float GetCurrentPoints() const;
+
 	UFUNCTION(BlueprintCallable)
 	void SetShopWidget(UUserWidget* Widget);
 
 	UFUNCTION(BlueprintCallable)
 	void RepairMainTower();
 
+	UFUNCTION(BlueprintCallable)
+	void BuyTowerMaxHealth();
+
 
 private:
 	// TO DO: Reference to GameMode as a way to get all info regarding tower: Points, health, energy...
 	class ABasicGameMode* GameMode;
+	class AMainTower* PlayerTowerRef;
 
     // Reference to the shop UI widget
     UPROPERTY(EditAnywhere)
     class UUserWidget* ShopWidget;
 
+	float ShopPoints;
+
     // Flag to track whether the shop is currently visible
     bool bIsShopVisible = false;
 
-	float MaxHealth;
+	UPROPERTY(EditAnywhere)
+	float HealCost;
+	UPROPERTY(EditAnywhere)
+	float MaxHpCost;
+
+	float MaxHpCap = 400;
 };

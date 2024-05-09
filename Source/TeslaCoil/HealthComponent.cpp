@@ -37,6 +37,11 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
+void UHealthComponent::SetMaxHealth(float newMaxHealth)
+{
+	MaxHealth = newMaxHealth;
+}
+
 void UHealthComponent::HealActor(float HealAmount)
 {
 	Health += HealAmount;

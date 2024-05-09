@@ -47,6 +47,7 @@ void AMainTower::BeginPlay()
     Energy = MaxEnergy;
     TowerPlayerController = Cast<APlayerController>(GetController());
     PlayerTowerHealthComponent = FindComponentByClass<UHealthComponent>();
+    PlayerTowerHealthComponent->SetMaxHealth(100);
 }
 
 

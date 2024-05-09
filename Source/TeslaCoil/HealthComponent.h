@@ -39,6 +39,12 @@ public:
 	float GetCurrentHealth() const { return Health/MaxHealth; }
 
 	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetMaxHealth() const { return MaxHealth; }
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void SetMaxHealth(float newMaxHealth);
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	void HealActor(float HealAmount);
 		
 };

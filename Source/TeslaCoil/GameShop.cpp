@@ -5,6 +5,8 @@
 #include "Blueprint/UserWidget.h"
 #include "BasicGameMode.h"
 #include "Kismet/GameplayStatics.h"
+#include "MainTower.h"
+#include "HealthComponent.h"
 
 AGameShop::AGameShop()
 {
@@ -17,13 +19,23 @@ void AGameShop::BeginPlay()
 	Super::BeginPlay();
 
 	GameMode = Cast<ABasicGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-	MaxHealth = 100;
+	PlayerTowerRef = Cast<AMainTower>(UGameplayStatics::GetPlayerPawn(this, 0));
 }
 
 void AGameShop::StartGameShop()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Reached gameshop's startgame"));
 	//ShopWidget->AddToViewport();
+}
+
+void AGameShop::UpdatePoints(float Points)
+{
+	ShopPoints = Points;
+}
+
+float AGameShop::GetCurrentPoints() const
+{
+	return ShopPoints;
 }
 
 void AGameShop::SetShopWidget(UUserWidget* Widget)
@@ -33,18 +45,28 @@ void AGameShop::SetShopWidget(UUserWidget* Widget)
 
 void AGameShop::RepairMainTower()
 {
-	float currentHealth = GameMode->GetPlayerHealth();
+	float currentHealth = PlayerTowerRef->GetTowerHealthComponent()->GetCurrentHealth();;
+	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
 	
-	if (currentHealth < MaxHealth) 
+	if (currentHealth < maxHealth) 
 	{
-		float PlayerPoints = GameMode->GetPointCount();
-
-		if(PlayerPoints >= 50)
+		if(ShopPoints >= HealCost)
 		{
-			GameMode->HealPlayer(20);
-			GameMode->SetPointCount(PlayerPoints - 50);
+			PlayerTowerRef->GetTowerHealthComponent()->HealActor(50);
+			UpdatePoints(ShopPoints - HealCost);
 		}
 	} 
+}
+
+void AGameShop::BuyTowerMaxHealth()
+{
+	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
+	if (maxHealth < MaxHpCap && ShopPoints >= MaxHpCost) 
+	{
+		UpdatePoints(ShopPoints - MaxHpCost);
+		PlayerTowerRef->GetTowerHealthComponent()->SetMaxHealth(maxHealth + 100);
+		GameMode->UIMaxHealthUpdate();
+	}
 }
 
 void AGameShop::ToggleShopVisibility()

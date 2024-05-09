@@ -48,7 +48,7 @@ void ABasicGameMode::ActorDied(AActor* DeadActor)
 	}
 	else if (ABaseEnemy* KilledEnemy = Cast<ABaseEnemy>(DeadActor))
 	{
-		playerScore += KilledEnemy->GetPointValue();
+		ShopInstance->UpdatePoints(ShopInstance->GetCurrentPoints() + KilledEnemy->GetPointValue());
 		KilledEnemy->HandleDestruction();
 		if (!bIsLastWave) return;
 		LastWaveEnemyCount--;
@@ -63,28 +63,15 @@ void ABasicGameMode::ActorDied(AActor* DeadActor)
 
 float ABasicGameMode::GetPointCount() const
 {
-	return playerScore;
+	return ShopInstance->GetCurrentPoints();
 }
 
-void ABasicGameMode::SetPointCount(float newPointCount)
-{
-	playerScore = newPointCount;
-}
 
 float ABasicGameMode::GetRoundTimeLeft() const
 {
 	return RemainingWaitTime;
 }
 
-float ABasicGameMode::GetPlayerHealth() const
-{
-	return MainTower->GetTowerHealthComponent()->GetCurrentHealth();
-}
-
-void ABasicGameMode::HealPlayer(float HealAmount)
-{
-	MainTower->GetTowerHealthComponent()->HealActor(HealAmount);
-}
 
 void ABasicGameMode::ForceNextRound() 
 {
@@ -152,9 +139,12 @@ void ABasicGameMode::RoundCountdown()
 }
 
 
-
-
 //Blueprint Implemented methods
+void ABasicGameMode::UIMaxHealthUpdate_Implementation()
+{
+	UE_LOG(LogTemp, Error, TEXT("UIMaxHealthUpdate needs to be set in BP"));
+}
+
 void ABasicGameMode::WaveOverBP_Implementation(bool bIsOver)
 {
 	UE_LOG(LogTemp, Error, TEXT("Wave over widget needs to be set in BP"));
