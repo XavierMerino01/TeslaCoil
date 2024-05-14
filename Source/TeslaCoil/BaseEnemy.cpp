@@ -3,6 +3,7 @@
 
 #include "BaseEnemy.h"
 #include "MainTower.h"
+#include "HealthComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -18,6 +19,8 @@ ABaseEnemy::ABaseEnemy()
 
 	BaseMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base Mesh"));
 	BaseMesh->SetupAttachment(BoxComp);
+
+	EnemyHealth = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 
 }
 

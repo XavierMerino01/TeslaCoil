@@ -54,6 +54,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UCameraComponent* Camera;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	class UHealthComponent* PlayerTowerHealthComponent;
 
 	void RecoverEnergy();

@@ -18,6 +18,8 @@ AMainTower::AMainTower()
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm);
 
+    PlayerTowerHealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+
     PrimaryActorTick.bCanEverTick = true;
 }
 
@@ -46,7 +48,6 @@ void AMainTower::BeginPlay()
 
     Energy = MaxEnergy;
     TowerPlayerController = Cast<APlayerController>(GetController());
-    PlayerTowerHealthComponent = FindComponentByClass<UHealthComponent>();
     PlayerTowerHealthComponent->SetMaxHealth(100);
 }
 
