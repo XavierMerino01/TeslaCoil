@@ -4,6 +4,7 @@
 #include "TeslaTower.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ATeslaTower::ATeslaTower()
@@ -27,6 +28,17 @@ void ATeslaTower::BeginPlay()
 {
 	Super::BeginPlay();
 	
+}
+
+void ATeslaTower::OnHitTarget(AActor* TargetActor)
+{
+	if (TargetActor->Tags.Contains("Enemy"))
+	{
+
+		AController* MyOwnerInstigator = GetInstigatorController();
+		UClass* DamageTypeClass = UDamageType::StaticClass();
+		UGameplayStatics::ApplyDamage(TargetActor, TowerDamage, MyOwnerInstigator, this, DamageTypeClass);
+	}
 }
 
 // Called every frame

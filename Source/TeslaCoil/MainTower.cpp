@@ -126,16 +126,6 @@ void AMainTower::Fire()
     }
 }
 
-void AMainTower::OnHitTarget(AActor* TargetActor)
-{
-    if (TargetActor->Tags.Contains("Enemy"))
-    {
-
-        AController* MyOwnerInstigator = GetInstigatorController();
-        UClass* DamageTypeClass = UDamageType::StaticClass();
-        UGameplayStatics::ApplyDamage(TargetActor, LightningDamage, MyOwnerInstigator, this, DamageTypeClass);
-    }
-}
 
 FVector AMainTower::GetHitTarget()
 {

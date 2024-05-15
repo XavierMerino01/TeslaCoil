@@ -22,6 +22,8 @@ ABaseEnemy::ABaseEnemy()
 
 	EnemyHealth = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 
+	//TO DO: Construct health bar widget and tags ("Enemy", "RayTarget")
+
 }
 
 // Called when the game starts or when spawned

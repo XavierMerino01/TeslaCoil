@@ -61,8 +61,6 @@ private:
 
 	void Fire();
 
-	void OnHitTarget(AActor* TargetActor);
-
 	FVector GetHitTarget();
 
 	APlayerController* TowerPlayerController;
@@ -78,9 +76,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Lightning")
 	float LightningCost = 10.f;
-
-	UPROPERTY(EditAnywhere, Category = "Lightning")
-	float LightningDamage = 10.f;
 
 	
 };

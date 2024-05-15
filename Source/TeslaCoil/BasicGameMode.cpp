@@ -52,7 +52,7 @@ void ABasicGameMode::ActorDied(AActor* DeadActor)
 		KilledEnemy->HandleDestruction();
 		if (!bIsLastWave) return;
 		LastWaveEnemyCount--;
-		UE_LOG(LogTemp, Warning, TEXT("After kill enemy count : %f"), LastWaveEnemyCount);
+
 		if (LastWaveEnemyCount == 0) 
 		{
 			PlayerController->SetPlayerEnabledState(false);
@@ -83,8 +83,6 @@ void ABasicGameMode::ForceNextRound()
 	{
 		bIsLastWave = true;
 		LastWaveEnemyCount = RoundsInfo[currentWave].NumEnemiesToSpawn;
-
-		UE_LOG(LogTemp, Warning, TEXT("Enemy wave count : %f"), LastWaveEnemyCount);
 	}
 }
 

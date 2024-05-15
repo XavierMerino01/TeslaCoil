@@ -47,6 +47,8 @@ public:
 
 	float GetPointValue() const { return PointValue; }
 
+	class UHealthComponent* GetEnemyHealthComponent() const { return EnemyHealth; }
+
 private:
 
 	//Basic components that all enemies have
