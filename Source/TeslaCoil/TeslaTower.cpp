@@ -34,11 +34,19 @@ void ATeslaTower::OnHitTarget(AActor* TargetActor)
 {
 	if (TargetActor->Tags.Contains("Enemy"))
 	{
-
 		AController* MyOwnerInstigator = GetInstigatorController();
 		UClass* DamageTypeClass = UDamageType::StaticClass();
 		UGameplayStatics::ApplyDamage(TargetActor, TowerDamage, MyOwnerInstigator, this, DamageTypeClass);
 	}
+	else
+	{
+		MissedHit();
+	}
+}
+
+void ATeslaTower::MissedHit()
+{
+	return;
 }
 
 // Called every frame

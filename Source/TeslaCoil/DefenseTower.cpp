@@ -12,6 +12,7 @@ ADefenseTower::ADefenseTower()
     CollisionSphere->SetupAttachment(RootComponent);
     CollisionSphere->OnComponentBeginOverlap.AddDynamic(this, &ADefenseTower::OnOverlapBegin);
 
+    CurrentTarget = nullptr;
     bHasTarget = false;
 }
 
@@ -19,8 +20,6 @@ ADefenseTower::ADefenseTower()
 void ADefenseTower::BeginPlay()
 {
 	Super::BeginPlay();
-
-    GetWorldTimerManager().SetTimer(ShootingTimerHandle, this, &ADefenseTower::CheckFireCondition, FireRate, true);
 }
 
 void ADefenseTower::Tick(float DeltaTime)
@@ -40,23 +39,45 @@ void ADefenseTower::CheckFireCondition()
         return;
     }
     
-    CurrentTarget = GetEnemyTarget();
-    bHasTarget = true;
+    SetEnemyTarget();
     Fire();
 
 }
 
 void ADefenseTower::OnHitTarget(AActor* TargetActor)
 {
+
     Super::OnHitTarget(TargetActor);
 
     ABaseEnemy* CurrentEnemy = Cast<ABaseEnemy>(TargetActor);
-    float EnemyHealth = CurrentEnemy->GetEnemyHealthComponent()->GetCurrentHealth();
-    if (EnemyHealth <= 0) 
+    if (CurrentEnemy)
     {
-        bHasTarget = false;
-        DetectedEnemies.Remove(TargetActor);
+        UHealthComponent* HealthComponent = CurrentEnemy->GetEnemyHealthComponent();
+        if (HealthComponent)
+        {
+            float EnemyHealth = HealthComponent->GetCurrentHealth();
+            if (EnemyHealth <= 0)
+            {
+                bHasTarget = false;
+                CurrentTarget = nullptr;
+                DetectedEnemies.Remove(TargetActor);
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("HealthComponent is null on the enemy: %s"), *CurrentEnemy->GetName());
+        }
     }
+    else
+    {
+        ResetTarget();
+    }
+}
+
+void ADefenseTower::MissedHit()
+{
+    DetectedEnemies.Remove(CurrentTarget);
+    ResetTarget();
 }
 
 void ADefenseTower::Fire()
@@ -65,7 +86,8 @@ void ADefenseTower::Fire()
     FVector StartLocation = FiringPoint->GetComponentLocation();
 
     // Get the hit target as the original end location
-    FVector EndLocation = CurrentTarget;
+    if (CurrentTarget == nullptr) return;
+    FVector EndLocation = CurrentTarget->GetActorLocation();
 
     // Extend the end location by a factor to increase its length
     FVector WorldDirection = (EndLocation - StartLocation).GetSafeNormal(); // Get the direction vector
@@ -79,13 +101,11 @@ void ADefenseTower::Fire()
     LightAttackParams.AddIgnoredActor(GetOwner());
     bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Destructible, LightAttackParams);
 
-
     if (bHit)
     {
         AActor* HitActor = Hit.GetActor();
-        if (HitActor == nullptr) return;
 
-        if (HitActor->Tags.Contains("RayTarget"))
+        if (HitActor && HitActor->Tags.Contains("RayTarget"))
         {
             CreateLightningFX(StartLocation, Hit.ImpactPoint, Hit.ImpactNormal);
             OnHitTarget(HitActor); //Will call parent declared method OnHitTarget() to deal TowerDamage amount to the HitActor health
@@ -102,12 +122,16 @@ void ADefenseTower::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
 {
     if (OtherActor && OtherActor->IsA<ABaseEnemy>())
     {
+        if (!GetWorld()->GetTimerManager().IsTimerActive(ShootingTimerHandle))
+        {
+            GetWorldTimerManager().SetTimer(ShootingTimerHandle, this, &ADefenseTower::CheckFireCondition, FireRate, true);
+        }
         DetectedEnemies.Add(OtherActor);
     }
 }
 
 
-FVector ADefenseTower::GetEnemyTarget()
+void ADefenseTower::SetEnemyTarget()
 {
 
     // Find the closest enemy
@@ -125,7 +149,20 @@ FVector ADefenseTower::GetEnemyTarget()
         }
     }
 
-    return ClosestEnemy->GetActorLocation();
+    CurrentTarget = ClosestEnemy;
+    bHasTarget = true;
+    
+}
+
+void ADefenseTower::ResetTarget()
+{
+    bHasTarget = false;
+    CurrentTarget = nullptr;
+
+    if (DetectedEnemies.Num() == 0) 
+    {
+        GetWorld()->GetTimerManager().ClearTimer(ShootingTimerHandle);
+    }
 }
 
 

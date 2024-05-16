@@ -3,45 +3,42 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
-#include "TeslaTower.generated.h"
+#include "GameFramework/Actor.h"
+#include "ActorTile.generated.h"
 
 UCLASS()
-class TESLACOIL_API ATeslaTower : public APawn
+class TESLACOIL_API AActorTile : public AActor
 {
 	GENERATED_BODY()
-
-public:
-	// Sets default values for this pawn's properties
-	ATeslaTower();
+	
+public:	
+	// Sets default values for this actor's properties
+	AActorTile();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void OnHitTarget(AActor* TargetActor);
-
-	virtual void MissedHit();
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere, Category = "Lightning")
-	float TowerDamage;
+	void ShowTileObject();
+
+	void HideTileObject();
+
+	bool GetTileState() { return bTileIsUsed;  }
+	void SetTileComplete();
 
 
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	class UCapsuleComponent* CapsuleComp;
+	UStaticMeshComponent* TileBase;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* BaseMesh;
+	UStaticMeshComponent* TileObjectMesh;
 
-protected:
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* FiringPoint;
+	bool bTileIsUsed;
 
 };

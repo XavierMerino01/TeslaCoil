@@ -47,13 +47,17 @@ private:
 
 	virtual void OnHitTarget(AActor* TargetActor) override;
 
+	virtual void MissedHit() override;
+
 	TArray<AActor*> DetectedEnemies;
 
 	void Fire();
 
-	FVector CurrentTarget;
+	AActor* CurrentTarget;
 
-	FVector GetEnemyTarget();
+	void SetEnemyTarget();
+
+	void ResetTarget();
 
 	float FireRate = 1;
 

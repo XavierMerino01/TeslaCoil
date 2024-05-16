@@ -8,6 +8,8 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "BasicGameMode.h"
+#include "GameShop.h"
 
 
 AMainTower::AMainTower()
@@ -78,6 +80,21 @@ void AMainTower::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
     PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AMainTower::Fire);
 }
 
+void AMainTower::SetControllerToPlaceObject()
+{
+    UInputComponent* PlayerInputComponent = this->InputComponent;
+
+    PlayerInputComponent->RemoveActionBinding(TEXT("Fire"), IE_Pressed);
+    PlayerInputComponent->BindAction(TEXT("PlaceObject"), IE_Pressed, this, &AMainTower::PlaceActor);
+}
+
+void AMainTower::SetControllerToAttack()
+{
+    UInputComponent* PlayerInputComponent = this->InputComponent;
+
+    PlayerInputComponent->RemoveActionBinding(TEXT("PlaceObject"), IE_Pressed);
+    PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &AMainTower::Fire);
+}
 
 void AMainTower::Fire()
 {
@@ -124,6 +141,12 @@ void AMainTower::Fire()
     {
         DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true);
     }
+}
+
+void AMainTower::PlaceActor()
+{
+    ABasicGameMode* GameMode = Cast<ABasicGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+    GameMode->GetShopInstanceRef()->PlaceNewActor();
 }
 
 

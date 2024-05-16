@@ -42,6 +42,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OpenShop();
+	UFUNCTION(BlueprintCallable)
+	void CloseShop();
 
 	UFUNCTION(BlueprintCallable)
 	AGameShop* GetShopInstanceRef();

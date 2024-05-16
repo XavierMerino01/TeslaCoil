@@ -41,6 +41,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UHealthComponent* GetTowerHealthComponent();
 
+	void SetControllerToPlaceObject();
+	void SetControllerToAttack();
+
+	void Fire();
+	void PlaceActor();
 
 protected:
 	// Called when the game starts or when spawned
@@ -59,8 +64,6 @@ private:
 
 	void RecoverEnergy();
 
-	void Fire();
-
 	FVector GetHitTarget();
 
 	APlayerController* TowerPlayerController;
@@ -76,6 +79,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Lightning")
 	float LightningCost = 10.f;
-
 	
 };
