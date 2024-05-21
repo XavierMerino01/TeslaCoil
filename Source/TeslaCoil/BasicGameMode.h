@@ -41,11 +41,6 @@ public:
 	void ForceNextRound();
 
 	UFUNCTION(BlueprintCallable)
-	void OpenShop();
-	UFUNCTION(BlueprintCallable)
-	void CloseShop();
-
-	UFUNCTION(BlueprintCallable)
 	AGameShop* GetShopInstanceRef();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game Mode")

@@ -86,15 +86,6 @@ void ABasicGameMode::ForceNextRound()
 	}
 }
 
-void ABasicGameMode::OpenShop() 
-{
-	ShopInstance->ToggleShopVisibility();
-}
-
-void ABasicGameMode::CloseShop()
-{
-	ShopInstance->ToggleShopVisibility();
-}
 
 AGameShop* ABasicGameMode::GetShopInstanceRef() 
 {

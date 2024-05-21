@@ -22,8 +22,6 @@ public:
 
 	AGameShop();
 
-	UFUNCTION(BlueprintCallable)
-	void ToggleShopVisibility();
 
 	void StartGameShop();
 
@@ -64,9 +62,6 @@ private:
 
 
 	float ShopPoints;
-
-    // Flag to track whether the shop is currently visible
-    bool bIsShopVisible = false;
 
 	bool bIsPlacingObject;
 

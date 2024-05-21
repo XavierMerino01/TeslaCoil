@@ -14,7 +14,6 @@
 
 AGameShop::AGameShop()
 {
-	bIsShopVisible = true;
 	bIsPlacingObject = false;
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -105,7 +104,6 @@ void AGameShop::BuyMiniCoil()
 {
 	if(ShopPoints >= BuyMiniCoilCost)
 	{
-		GameMode->CloseShop();
 		PlayerTowerRef->SetControllerToPlaceObject();
 		bIsPlacingObject = true;
 	}
@@ -129,23 +127,6 @@ void AGameShop::PlaceNewActor()
 	PlayerTowerRef->SetControllerToAttack();
 }
 
-void AGameShop::ToggleShopVisibility()
-{
-	bIsShopVisible = !bIsShopVisible;
-
-	if (ShopWidget) 
-	{
-		if (bIsShopVisible) 
-		{
-			ShopWidget->SetVisibility(ESlateVisibility::Visible);
-		}
-		else
-		{
-			ShopWidget->SetVisibility(ESlateVisibility::Hidden);
-		}
-		
-	}
-}
 
 
 AActorTile* AGameShop::GetMouseTile()
@@ -174,10 +155,12 @@ AActorTile* AGameShop::GetMouseTile()
 			return OverlappingTile;
 		}
 		
+		UE_LOG(LogTemp, Warning, TEXT("Hit but not Tile"));
 		return nullptr;
 
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("Tile LOST"));
 	return nullptr;
 
 }
