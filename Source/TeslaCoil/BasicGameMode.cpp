@@ -48,7 +48,7 @@ void ABasicGameMode::ActorDied(AActor* DeadActor)
 	}
 	else if (ABaseEnemy* KilledEnemy = Cast<ABaseEnemy>(DeadActor))
 	{
-		ShopInstance->UpdatePoints(ShopInstance->GetCurrentPoints() + KilledEnemy->GetPointValue());
+		ShopInstance->UpdateShopOnKill(KilledEnemy);
 		KilledEnemy->HandleDestruction();
 		if (!bIsLastWave) return;
 		LastWaveEnemyCount--;

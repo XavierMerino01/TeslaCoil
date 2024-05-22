@@ -7,10 +7,12 @@
 #include "BasicGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "MainTower.h"
+#include "BaseEnemy.h"
 #include "DefenseTower.h"
 #include "HealthComponent.h"
 #include "TowerPlayerController.h"
 #include "ActorTile.h"
+#include "GameStructures.h"
 
 AGameShop::AGameShop()
 {
@@ -27,6 +29,7 @@ void AGameShop::BeginPlay()
 	GameMode = Cast<ABasicGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	PlayerController = Cast<ATowerPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	PlayerTowerRef = Cast<AMainTower>(UGameplayStatics::GetPlayerPawn(this, 0));
+	GameStructures = Cast<AGameStructures>(UGameplayStatics::GetActorOfClass(GetWorld(), AGameStructures::StaticClass()));
 }
 
 void AGameShop::Tick(float DeltaTime)
@@ -64,6 +67,18 @@ void AGameShop::UpdatePoints(float Points)
 	ShopPoints = Points;
 }
 
+void AGameShop::UpdateShopOnKill(ABaseEnemy* KilledEnemy)
+{
+	float EnemyValue = KilledEnemy->GetPointValue();
+	UpdatePoints(ShopPoints + EnemyValue);
+	if ( EnemyValue == 30)
+	{
+		KilledBasicEnemies++;
+		if (KilledBasicEnemies != 5) return;
+		UnlockStructure(1);
+	}
+}
+
 float AGameShop::GetCurrentPoints() const
 {
 	return ShopPoints;
@@ -79,13 +94,10 @@ void AGameShop::RepairMainTower()
 	float currentHealth = PlayerTowerRef->GetTowerHealthComponent()->GetCurrentHealth();;
 	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
 	
-	if (currentHealth < maxHealth) 
+	if (currentHealth < maxHealth && ShopPoints >= HealCost)
 	{
-		if(ShopPoints >= HealCost)
-		{
-			PlayerTowerRef->GetTowerHealthComponent()->HealActor(50);
-			UpdatePoints(ShopPoints - HealCost);
-		}
+		PlayerTowerRef->GetTowerHealthComponent()->HealActor(50);
+		UpdatePoints(ShopPoints - HealCost);
 	} 
 }
 
@@ -97,6 +109,15 @@ void AGameShop::BuyTowerMaxHealth()
 		UpdatePoints(ShopPoints - MaxHpCost);
 		PlayerTowerRef->GetTowerHealthComponent()->SetMaxHealth(maxHealth + 100);
 		GameMode->UIMaxHealthUpdate();
+	}
+}
+
+void AGameShop::BuyFactory()
+{
+	if (ShopPoints >= FactoryCost)
+	{
+		UpdatePoints(ShopPoints - FactoryCost);
+		GameStructures->ActivateFactory();
 	}
 }
 
@@ -141,26 +162,28 @@ AActorTile* AGameShop::GetMouseTile()
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(GetOwner());
-	bool bHasTarget = GetWorld()->LineTraceSingleByChannel(MouseHit, Location, End, ECC_Destructible, Params);
-
+	bool bHasTarget = GetWorld()->LineTraceSingleByChannel(MouseHit, Location, End, ECC_GameTraceChannel1, Params);
 
 	if (bHasTarget)
 	{
 		AActor* HitActor = MouseHit.GetActor();
 		if(HitActor && HitActor->IsA<AActorTile>())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Tile was hit"));
 
 			AActorTile* OverlappingTile = Cast<AActorTile>(HitActor);
 			return OverlappingTile;
 		}
-		
-		UE_LOG(LogTemp, Warning, TEXT("Hit but not Tile"));
+	
 		return nullptr;
 
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Tile LOST"));
 	return nullptr;
 
+}
+
+
+void AGameShop::UnlockStructure_Implementation(int StructureIndex)
+{
+	UE_LOG(LogTemp, Error, TEXT("Behaviour of UnlockStructure to be determined in GameShop BP"));
 }

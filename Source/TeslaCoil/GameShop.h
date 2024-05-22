@@ -25,7 +25,12 @@ public:
 
 	void StartGameShop();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class UUserWidget* ShopWidget;
+
 	void UpdatePoints(float Points);
+
+	void UpdateShopOnKill(class ABaseEnemy* KilledEnemy);
 
 	UFUNCTION(BlueprintCallable)
 	float GetCurrentPoints() const;
@@ -33,11 +38,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetShopWidget(UUserWidget* Widget);
 
+	UFUNCTION(BlueprintNativeEvent, Category = "Game Mode")
+	void UnlockStructure(int StructureIndex);
+
+	// Default implementation of the function
+	virtual void UnlockStructure_Implementation(int StructureIndex);
+
 	UFUNCTION(BlueprintCallable)
 	void RepairMainTower();
 
 	UFUNCTION(BlueprintCallable)
 	void BuyTowerMaxHealth();
+
+	UFUNCTION(BlueprintCallable)
+	void BuyFactory();
 
 	UFUNCTION(BlueprintCallable)
 	void BuyMiniCoil();
@@ -52,10 +66,7 @@ private:
 	class ABasicGameMode* GameMode;
 	class AMainTower* PlayerTowerRef;
 	class ATowerPlayerController* PlayerController;
-
-    // Reference to the shop UI widget
-    UPROPERTY(EditAnywhere)
-    class UUserWidget* ShopWidget;
+	class AGameStructures* GameStructures;
 
 	class AActorTile* TargettedTile;
 	class AActorTile* GetMouseTile();
@@ -63,13 +74,17 @@ private:
 
 	float ShopPoints;
 
+	int KilledBasicEnemies;
+
 	bool bIsPlacingObject;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float HealCost;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float MaxHpCost;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
+	float FactoryCost;
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float BuyMiniCoilCost;
 
 	float MaxHpCap = 400;
