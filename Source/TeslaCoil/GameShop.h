@@ -44,14 +44,14 @@ public:
 	// Default implementation of the function
 	virtual void UnlockStructure_Implementation(int StructureIndex);
 
-	UFUNCTION(BlueprintCallable)
 	void RepairMainTower();
-
-	UFUNCTION(BlueprintCallable)
 	void BuyTowerMaxHealth();
+	void BuyFactory();
+	void BuyRadio();
+	void BuyBombDrop();
 
 	UFUNCTION(BlueprintCallable)
-	void BuyFactory();
+	void BuyAction(FName StructureName, class UButton* ClickedButton, UButton* UnlockedButton);
 
 	UFUNCTION(BlueprintCallable)
 	void BuyMiniCoil();
@@ -60,6 +60,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class ADefenseTower> MiniCoil;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AActor> Bomb;
 
 private:
 	// TO DO: Reference to GameMode as a way to get all info regarding tower: Points, health, energy...
@@ -70,11 +73,13 @@ private:
 
 	class AActorTile* TargettedTile;
 	class AActorTile* GetMouseTile();
+	class UButton* CurrentButton;
+	UButton* NewUnlockedButton;
 
 
 	float ShopPoints;
 
-	int KilledBasicEnemies;
+	int KilledBasicEnemies, NumberOfCoils;
 
 	bool bIsPlacingObject;
 
@@ -85,7 +90,19 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float FactoryCost;
 	UPROPERTY(EditAnywhere, Category = "Shop Prices")
+	float RadioCost;
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float BuyMiniCoilCost;
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
+	float BombDropCost;
 
 	float MaxHpCap = 400;
+
+	typedef void (AGameShop::* BuyFunction)();
+
+	TMap<FName, BuyFunction> BuyFunctionMap;
+
+	void InitializeBuyFunctionMap();
+
+	void ManageButtonVisibility();
 };

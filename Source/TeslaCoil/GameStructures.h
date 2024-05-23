@@ -18,6 +18,7 @@ public:
 	void ActivateFactory();
 	void ActivateRadio();
 
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class AActorTile> ObjectTile;
 
@@ -37,5 +38,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	TArray<FVector> TilePositions;
 
-	void CreateNewTile(int TileIndex);
+	int TileIndex;
+	int RadioTier;
+
+	void CreateNewTile();
 };

@@ -13,6 +13,7 @@
 #include "TowerPlayerController.h"
 #include "ActorTile.h"
 #include "GameStructures.h"
+#include "Components/Button.h"
 
 AGameShop::AGameShop()
 {
@@ -30,6 +31,8 @@ void AGameShop::BeginPlay()
 	PlayerController = Cast<ATowerPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 	PlayerTowerRef = Cast<AMainTower>(UGameplayStatics::GetPlayerPawn(this, 0));
 	GameStructures = Cast<AGameStructures>(UGameplayStatics::GetActorOfClass(GetWorld(), AGameStructures::StaticClass()));
+
+	InitializeBuyFunctionMap();
 }
 
 void AGameShop::Tick(float DeltaTime)
@@ -75,7 +78,7 @@ void AGameShop::UpdateShopOnKill(ABaseEnemy* KilledEnemy)
 	{
 		KilledBasicEnemies++;
 		if (KilledBasicEnemies != 5) return;
-		UnlockStructure(1);
+		UnlockStructure(0);
 	}
 }
 
@@ -118,8 +121,42 @@ void AGameShop::BuyFactory()
 	{
 		UpdatePoints(ShopPoints - FactoryCost);
 		GameStructures->ActivateFactory();
+		FactoryCost += 100;
+		if (CurrentButton != nullptr)
+		{
+			ManageButtonVisibility();
+		}
 	}
 }
+
+void AGameShop::BuyRadio()
+{
+	if (ShopPoints >= RadioCost)
+	{
+		UpdatePoints(ShopPoints - RadioCost);
+		GameStructures->ActivateRadio();
+		RadioCost += 100;
+		if (CurrentButton != nullptr)
+		{
+			ManageButtonVisibility();
+		}
+	}
+}
+
+void AGameShop::BuyBombDrop()
+{
+	if (ShopPoints >= BombDropCost)
+	{
+		UpdatePoints(ShopPoints - BombDropCost);
+
+		FVector SpawnPosition;
+		SpawnPosition.X = 150;
+		SpawnPosition.Y = -1960;
+		SpawnPosition.Z = 1090;
+		AActor* NewBomb = GetWorld()->SpawnActor<AActor>(Bomb, SpawnPosition, FRotator::ZeroRotator);
+	}
+}
+
 
 void AGameShop::BuyMiniCoil()
 {
@@ -127,6 +164,9 @@ void AGameShop::BuyMiniCoil()
 	{
 		PlayerTowerRef->SetControllerToPlaceObject();
 		bIsPlacingObject = true;
+		NumberOfCoils++;
+		if (NumberOfCoils != 2) return;
+		UnlockStructure(1);
 	}
 }
 
@@ -138,6 +178,7 @@ void AGameShop::PlaceNewActor()
 	TargettedTile->SetTileComplete();
 	bIsPlacingObject = false;
 	FVector SpawnPosition = TargettedTile->GetActorLocation();
+	SpawnPosition.Z = 0;
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
@@ -180,6 +221,40 @@ AActorTile* AGameShop::GetMouseTile()
 
 	return nullptr;
 
+}
+
+void AGameShop::InitializeBuyFunctionMap()
+{
+	BuyFunctionMap.Add("MiniCoil", &AGameShop::BuyMiniCoil);
+	BuyFunctionMap.Add("MaxHealth", &AGameShop::BuyTowerMaxHealth);
+	BuyFunctionMap.Add("Repair", &AGameShop::RepairMainTower);
+	BuyFunctionMap.Add("Factory", &AGameShop::BuyFactory);
+	BuyFunctionMap.Add("Radio", &AGameShop::BuyRadio);
+	BuyFunctionMap.Add("MakeItRain", &AGameShop::BuyBombDrop);
+}
+
+void AGameShop::ManageButtonVisibility()
+{
+	CurrentButton->SetVisibility(ESlateVisibility::Collapsed);
+	NewUnlockedButton->SetVisibility(ESlateVisibility::Visible);
+	CurrentButton = nullptr;
+	NewUnlockedButton = nullptr;
+}
+
+void AGameShop::BuyAction(FName StructureName, UButton* ClickedButton, UButton* UnlockedButton)
+{
+	CurrentButton = ClickedButton;
+	NewUnlockedButton = UnlockedButton;
+
+	BuyFunction* BuyFunc = BuyFunctionMap.Find(StructureName);
+	if (BuyFunc)
+	{
+		(this->* * BuyFunc)(); // Dereference and call the function
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Unknown structure: %s"), *StructureName.ToString());
+	}
 }
 
 

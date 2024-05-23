@@ -22,14 +22,27 @@ AGameStructures::AGameStructures()
 
 void AGameStructures::ActivateFactory()
 {
-	FactoryMesh->SetVisibility(true);
-	CreateNewTile(0);
+	if (TileIndex == 0)
+	{
+		FactoryMesh->SetVisibility(true);
+	}
+	CreateNewTile();
 }
 
 void AGameStructures::ActivateRadio()
 {
-	RadioMesh->SetVisibility(true);
+	if (RadioTier == 0)
+	{
+		RadioMesh->SetVisibility(true);
+		RadioTier++;
+	}
+	else 
+	{
+		RadioTier++;
+		UE_LOG(LogTemp, Warning, TEXT("Radio Tier Upgraded to: %d"), RadioTier);
+	}
 }
+
 
 // Called when the game starts or when spawned
 void AGameStructures::BeginPlay()
@@ -38,9 +51,10 @@ void AGameStructures::BeginPlay()
 	
 }
 
-void AGameStructures::CreateNewTile(int TileIndex)
+void AGameStructures::CreateNewTile()
 {
 	FVector SpawnPosition = TilePositions[TileIndex];
+	TileIndex++;
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	AActorTile* NewTile = GetWorld()->SpawnActor<AActorTile>(ObjectTile, SpawnPosition, FRotator::ZeroRotator, SpawnParams);
