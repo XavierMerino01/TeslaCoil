@@ -65,8 +65,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> Bomb;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor> Helicopter;
 
 private:
 	// TO DO: Reference to GameMode as a way to get all info regarding tower: Points, health, energy...
@@ -101,6 +99,9 @@ private:
 	float BombDropCost;
 	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float HeliCost;
+
+	UPROPERTY(EditAnywhere, Category = "Shop Objects")
+	AActor* Heli;
 
 	float MaxHpCap = 400;
 

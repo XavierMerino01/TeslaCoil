@@ -163,9 +163,13 @@ void AGameShop::BuyHelicopter()
 	{
 		UpdatePoints(ShopPoints - HeliCost);
 
-		FVector SpawnPosition = GetActorLocation();
+		if (Heli)
+		{
+			FName FunctionName = TEXT("OnHelicopterSpawned");
 
-		AActor* NewHeli = GetWorld()->SpawnActor<AActor>(Helicopter, SpawnPosition, FRotator::ZeroRotator);
+			UFunction* Function = Heli->FindFunction(FunctionName);
+			Heli->ProcessEvent(Function, nullptr);
+		}
 	}
 }
 
