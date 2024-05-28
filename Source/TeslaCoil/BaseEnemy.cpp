@@ -74,6 +74,7 @@ void ABaseEnemy::RotateEnemy(FVector LookAtTarget)
 
 void ABaseEnemy::HandleDestruction()
 {
+	UGameplayStatics::SpawnEmitterAtLocation(this, DeathExplosion, GetActorLocation(), GetActorRotation());
 	Destroy();
 }
 

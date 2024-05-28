@@ -104,43 +104,12 @@ void AMainTower::Fire()
         return;
     }
 
-    if (FiringPoint == nullptr) return;
-    FVector StartLocation = FiringPoint->GetComponentLocation();
     if (TowerPlayerController == nullptr) return;
 
-    // Get the hit target as the original end location
-    FVector EndLocation = GetHitTarget();
+    Super::Fire();
 
-    // Extend the end location by a factor to increase its length
-    FVector WorldDirection = (EndLocation - StartLocation).GetSafeNormal(); // Get the direction vector
-    float ExtendedLength = (EndLocation - StartLocation).Size() * 2.0f; // Double the length
-    EndLocation = StartLocation + (WorldDirection * ExtendedLength); // Extend the end location
-
-
-    FHitResult Hit;
-    FCollisionQueryParams LightAttackParams;
-    LightAttackParams.AddIgnoredActor(this);
-    LightAttackParams.AddIgnoredActor(GetOwner());
-    bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Destructible, LightAttackParams);
-
-
-    if (bHit)
-    {
-        AActor* HitActor = Hit.GetActor();
-        if (HitActor == nullptr) return;
-
-        if (HitActor->Tags.Contains("RayTarget")) 
-        {
-            Energy -= LightningCost;
-            CreateLightningFX(StartLocation, Hit.ImpactPoint, Hit.ImpactNormal);
-            OnHitTarget(HitActor);
-        }
-
-    }
-    else 
-    {
-        DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true);
-    }
+    Energy -= LightningCost;
+    
 }
 
 void AMainTower::PlaceActor()
@@ -150,7 +119,7 @@ void AMainTower::PlaceActor()
 }
 
 
-FVector AMainTower::GetHitTarget()
+FVector AMainTower::GetTargetLocation()
 {
     FVector WorldLocation, WorldDirection;
     

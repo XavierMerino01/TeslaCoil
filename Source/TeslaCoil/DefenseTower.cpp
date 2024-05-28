@@ -82,40 +82,10 @@ void ADefenseTower::MissedHit()
 
 void ADefenseTower::Fire()
 {
-    if (FiringPoint == nullptr) return;
-    FVector StartLocation = FiringPoint->GetComponentLocation();
-
     // Get the hit target as the original end location
     if (CurrentTarget == nullptr) return;
-    FVector EndLocation = CurrentTarget->GetActorLocation();
-
-    // Extend the end location by a factor to increase its length
-    FVector WorldDirection = (EndLocation - StartLocation).GetSafeNormal(); // Get the direction vector
-    float ExtendedLength = (EndLocation - StartLocation).Size() * 2.0f; // Double the length
-    EndLocation = StartLocation + (WorldDirection * ExtendedLength); // Extend the end location
-
-
-    FHitResult Hit;
-    FCollisionQueryParams LightAttackParams;
-    LightAttackParams.AddIgnoredActor(this);
-    LightAttackParams.AddIgnoredActor(GetOwner());
-    bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Destructible, LightAttackParams);
-
-    if (bHit)
-    {
-        AActor* HitActor = Hit.GetActor();
-
-        if (HitActor && HitActor->Tags.Contains("RayTarget"))
-        {
-            CreateLightningFX(StartLocation, Hit.ImpactPoint, Hit.ImpactNormal);
-            OnHitTarget(HitActor); //Will call parent declared method OnHitTarget() to deal TowerDamage amount to the HitActor health
-        }
-
-    }
-    else
-    {
-        DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true);
-    }
+    
+    Super::Fire();
 }
 
 void ADefenseTower::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -130,6 +100,12 @@ void ADefenseTower::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* 
     }
 }
 
+
+FVector ADefenseTower::GetTargetLocation()
+{
+    //Returns the location of the currentTarget. Called by Fire() in parent class 
+    return CurrentTarget->GetActorLocation();
+}
 
 void ADefenseTower::SetEnemyTarget()
 {

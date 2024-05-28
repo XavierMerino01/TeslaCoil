@@ -49,6 +49,7 @@ public:
 	void BuyFactory();
 	void BuyRadio();
 	void BuyBombDrop();
+	void BuyHelicopter();
 
 	UFUNCTION(BlueprintCallable)
 	void BuyAction(FName StructureName, class UButton* ClickedButton, UButton* UnlockedButton);
@@ -63,6 +64,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AActor> Bomb;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AActor> Helicopter;
 
 private:
 	// TO DO: Reference to GameMode as a way to get all info regarding tower: Points, health, energy...
@@ -95,6 +99,8 @@ private:
 	float BuyMiniCoilCost;
 	UPROPERTY(EditAnywhere, Category = "Shop Prices")
 	float BombDropCost;
+	UPROPERTY(EditAnywhere, Category = "Shop Prices")
+	float HeliCost;
 
 	float MaxHpCap = 400;
 

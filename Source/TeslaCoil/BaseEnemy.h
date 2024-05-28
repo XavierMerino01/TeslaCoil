@@ -61,6 +61,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UHealthComponent* EnemyHealth;
 
+	UPROPERTY(EditAnywhere, Category = "Components")
+	class UParticleSystem* DeathExplosion;
+
 	//Method to return when the enemy reaches critical distance (determined by AttackRange) from the player and must realize action
 	bool InAttackRange();
 

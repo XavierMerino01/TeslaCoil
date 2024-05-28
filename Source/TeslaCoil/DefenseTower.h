@@ -22,12 +22,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 
-	// Declare the function as a blueprint native event
-	UFUNCTION(BlueprintNativeEvent, Category = "MyActor")
-	void CreateLightningFX(FVector startPoint, FVector targetPosition, FVector impactNormal);
-
 	// Default implementation of the function
-	virtual void CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal);
+	virtual void CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal) override;
 
 
 protected:
@@ -51,9 +47,11 @@ private:
 
 	TArray<AActor*> DetectedEnemies;
 
-	void Fire();
+	virtual void Fire() override;
 
 	AActor* CurrentTarget;
+
+	virtual FVector GetTargetLocation() override;
 
 	void SetEnemyTarget();
 

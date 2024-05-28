@@ -19,9 +19,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Fire();
+	virtual FVector GetTargetLocation();
+
 	virtual void OnHitTarget(AActor* TargetActor);
 
 	virtual void MissedHit();
+
+	// Declare the function as a blueprint native event
+	UFUNCTION(BlueprintNativeEvent, Category = "MyActor")
+	void CreateLightningFX(FVector startPoint, FVector targetPosition, FVector impactNormal);
+
+	// Default implementation of the function
+	virtual void CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal);
 
 public:	
 	// Called every frame

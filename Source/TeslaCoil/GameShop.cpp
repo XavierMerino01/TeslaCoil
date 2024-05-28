@@ -157,6 +157,18 @@ void AGameShop::BuyBombDrop()
 	}
 }
 
+void AGameShop::BuyHelicopter()
+{
+	if (ShopPoints >= HeliCost)
+	{
+		UpdatePoints(ShopPoints - HeliCost);
+
+		FVector SpawnPosition = GetActorLocation();
+
+		AActor* NewHeli = GetWorld()->SpawnActor<AActor>(Helicopter, SpawnPosition, FRotator::ZeroRotator);
+	}
+}
+
 
 void AGameShop::BuyMiniCoil()
 {
@@ -231,6 +243,7 @@ void AGameShop::InitializeBuyFunctionMap()
 	BuyFunctionMap.Add("Factory", &AGameShop::BuyFactory);
 	BuyFunctionMap.Add("Radio", &AGameShop::BuyRadio);
 	BuyFunctionMap.Add("MakeItRain", &AGameShop::BuyBombDrop);
+	BuyFunctionMap.Add("CallForHelp", &AGameShop::BuyHelicopter);
 }
 
 void AGameShop::ManageButtonVisibility()

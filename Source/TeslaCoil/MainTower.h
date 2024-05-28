@@ -28,12 +28,8 @@ public:
 
 	APlayerController* GetPlayerController() const { return TowerPlayerController; }
 
-	// Declare the function as a blueprint native event
-	UFUNCTION(BlueprintNativeEvent, Category = "MyActor")
-	void CreateLightningFX(FVector startPoint, FVector targetPosition, FVector impactNormal);
-
 	// Default implementation of the function
-	virtual void CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal);
+	virtual void CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal) override;
 
 	UFUNCTION(BlueprintPure)
 	float GetEnergyPercent() const;
@@ -44,7 +40,7 @@ public:
 	void SetControllerToPlaceObject();
 	void SetControllerToAttack();
 
-	void Fire();
+	virtual void Fire() override;
 	void PlaceActor();
 
 protected:
@@ -64,7 +60,7 @@ private:
 
 	void RecoverEnergy();
 
-	FVector GetHitTarget();
+	virtual FVector GetTargetLocation() override;
 
 	APlayerController* TowerPlayerController;
 

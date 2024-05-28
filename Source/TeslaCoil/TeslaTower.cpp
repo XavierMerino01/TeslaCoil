@@ -30,6 +30,49 @@ void ATeslaTower::BeginPlay()
 	
 }
 
+void ATeslaTower::Fire()
+{
+	//Make sure to check for nullptr in the child classes to avoid crashes (Mainly on TowerPlayerController for MainTower, and CurrentTarget for DefenseTower)
+	if (FiringPoint == nullptr) return;
+	FVector StartLocation = FiringPoint->GetComponentLocation();
+
+	// Get the hit target as the original end location
+	FVector EndLocation = GetTargetLocation();
+
+	// Extend the end location by a factor to increase its length
+	FVector WorldDirection = (EndLocation - StartLocation).GetSafeNormal(); // Get the direction vector
+	float ExtendedLength = (EndLocation - StartLocation).Size() * 2.0f; // Double the length
+	EndLocation = StartLocation + (WorldDirection * ExtendedLength); // Extend the end location
+
+
+	FHitResult Hit;
+	FCollisionQueryParams LightAttackParams;
+	LightAttackParams.AddIgnoredActor(this);
+	LightAttackParams.AddIgnoredActor(GetOwner());
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECC_Destructible, LightAttackParams);
+
+	if (bHit)
+	{
+		AActor* HitActor = Hit.GetActor();
+
+		if (HitActor && HitActor->Tags.Contains("RayTarget"))
+		{
+			CreateLightningFX(StartLocation, Hit.ImpactPoint, Hit.ImpactNormal);
+			OnHitTarget(HitActor); 
+		}
+
+	}
+	else
+	{
+		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, true);
+	}
+}
+
+FVector ATeslaTower::GetTargetLocation()
+{
+	return FVector();
+}
+
 void ATeslaTower::OnHitTarget(AActor* TargetActor)
 {
 	if (TargetActor->Tags.Contains("Enemy"))
@@ -47,6 +90,11 @@ void ATeslaTower::OnHitTarget(AActor* TargetActor)
 void ATeslaTower::MissedHit()
 {
 	return;
+}
+
+void ATeslaTower::CreateLightningFX_Implementation(FVector startPoint, FVector targetPosition, FVector impactNormal)
+{
+	UE_LOG(LogTemp, Warning, TEXT("LightningFX needs to be implemented in child classes BP"));
 }
 
 // Called every frame
