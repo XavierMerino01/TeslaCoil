@@ -115,6 +115,12 @@ void ADefenseTower::SetEnemyTarget()
     AActor* ClosestEnemy = nullptr;
     FVector TowerLocation = GetActorLocation();
 
+    if (DetectedEnemies.Num() == 0) 
+    {
+        ResetTarget();
+        return;
+    }
+
     for (AActor* Enemy : DetectedEnemies)
     {
         float Distance = FVector::Distance(TowerLocation, Enemy->GetActorLocation());
