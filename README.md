@@ -1,4 +1,4 @@
-#About
+# About
 Early prototype of a Tower Defense made in Unreal Engine 5 and programmed mainly using C++, but also with blueprint implemented functionalities.
 
 <div style="text-align: center;">
