@@ -97,7 +97,9 @@ void AGameShop::RepairMainTower()
 	float currentHealth = PlayerTowerRef->GetTowerHealthComponent()->GetCurrentHealth();;
 	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
 	
-	if (currentHealth < maxHealth && ShopPoints >= HealCost)
+	if (currentHealth >= maxHealth) return;
+
+	if (ShopPoints >= HealCost)
 	{
 		PlayerTowerRef->GetTowerHealthComponent()->HealActor(50);
 		UpdatePoints(ShopPoints - HealCost);
@@ -165,6 +167,7 @@ void AGameShop::BuyHelicopter()
 
 		if (Heli)
 		{
+			ManageButtonVisibility();
 			FName FunctionName = TEXT("OnHelicopterSpawned");
 
 			UFunction* Function = Heli->FindFunction(FunctionName);
