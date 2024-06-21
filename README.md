@@ -15,9 +15,9 @@ Defend against diverse enemy types with unique behaviors and attack patterns.
 ####  Progression System
 Earn points to access a shop for upgrades like tower healing and increased maximum HP.
 ####  Structures 
-Build factories to deploy mini Tesla coils and unlock radios for special abilities like airstrikes and helicopter support.
+Build and upgrade your factory and radio to deploy mini Tesla coils and unlock special abilities like airstrikes and helicopter support.
 ####  Objective
-Survive all rounds of enemy waves to achieve victory in this fast-paced, action-oriented gameplay experience.
+Survive all rounds of enemy waves to achieve victory.
 
 
 <div style="display: flex;">
