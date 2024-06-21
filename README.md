@@ -19,9 +19,6 @@ Build factories to deploy mini Tesla coils and unlock radios for special abiliti
 ####  Objective
 Survive all rounds of enemy waves to achieve victory in this fast-paced, action-oriented gameplay experience.
 
-<div style="display: flex;">
-    <img src="https://github.com/XavierMerino01/TeslaCoil/assets/71768212/52a3e784-fca3-46ae-a29d-c61e5ae4b17b" alt="Captura2" width="700">
-</div>
 
 <div style="display: flex;">
     <img src="https://github.com/XavierMerino01/TeslaCoil/assets/71768212/7a7e08a6-c3f3-4762-9055-f873e034c032" alt="Captura3" width="700">
