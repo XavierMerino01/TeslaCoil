@@ -25,9 +25,18 @@ Survive all rounds of enemy waves to achieve victory.
 </div>
 
 # Development Focus
-This project marks my transition into C++ programming after having developed for some time in Unity. The goal was to seamlessly integrate C++ with Unreal Engine's Blueprint visual scripting system, showcasing my skills in gameplay programming and design.
+This project is part of my transition into C++ programming after having developed for some time in Unity. The goal was to integrate C++ with Unreal Engine's Blueprint visual scripting system, showcasing my skills in gameplay programming and design.
 
 # Code Overview
-Implemented with a modular architecture, the code emphasizes object-oriented design principles and efficient gameplay mechanics. Utilizing Unreal Engine's Blueprint system, the project demonstrates a smooth integration of C++ and visual scripting for enhanced game functionality.
 
+#### Blueprint and C++ flow 
+Established data exchange and functionality between C++ backend logic and Blueprint visual scripting. Leveraged Blueprint for most of the UI interactions, and visual effects, while using C++ for core game mechanics. This integration facilitated rapid iteration, debugging, and tuning of gameplay elements.
 
+#### Inheritance for Systems and Enemies
+Designed parent classes for "ADefenseTower" and "ABaseEnemy", using inheritance to handle diverse tower behaviors and enemy types effectively.
+
+#### Modular Damage Handling
+Created a HealthComponent to serve as a tool to handle damage and healing for the desired Actor, when attached. Aiming to implement diferent sources of damage towards the enemy (Main Tower, MiniCoil, Bomb...), and also keeping it's functionality for the player harming and healing.
+
+#### Interactive Shop System
+Developed a flexible shop (AGameShop) with a mapped function system to introduce and manage purchasable upgrades, facilitating the addition and testing of new shop functionalities when desired.
