@@ -44,18 +44,19 @@ public:
 	// Default implementation of the function
 	virtual void UnlockStructure_Implementation(int StructureIndex);
 
-	void RepairMainTower();
-	void BuyTowerMaxHealth();
-	void BuyFactory();
-	void BuyRadio();
-	void BuyBombDrop();
-	void BuyHelicopter();
+	bool RepairMainTower();
+	bool BuyTowerMaxHealth();
+	bool BuyFactory();
+	bool BuyRadio();
+	bool BuyBombDrop();
+	bool BuyHelicopter();
+	bool EndHelicopter();
 
 	UFUNCTION(BlueprintCallable)
-	void BuyAction(FName StructureName, class UButton* ClickedButton, UButton* UnlockedButton);
+	bool BuyAction(FName StructureName, class UButton* ClickedButton, UButton* UnlockedButton);
 
 	UFUNCTION(BlueprintCallable)
-	void BuyMiniCoil();
+	bool BuyMiniCoil();
 
 	void PlaceNewActor();
 
@@ -105,7 +106,7 @@ private:
 
 	float MaxHpCap = 400;
 
-	typedef void (AGameShop::* BuyFunction)();
+	typedef bool (AGameShop::* BuyFunction)();
 
 	TMap<FName, BuyFunction> BuyFunctionMap;
 

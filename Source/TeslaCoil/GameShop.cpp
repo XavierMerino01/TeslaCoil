@@ -92,21 +92,23 @@ void AGameShop::SetShopWidget(UUserWidget* Widget)
 	ShopWidget = Widget;
 }
 
-void AGameShop::RepairMainTower()
+bool AGameShop::RepairMainTower()
 {
 	float currentHealth = PlayerTowerRef->GetTowerHealthComponent()->GetCurrentHealth();;
 	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
 	
-	if (currentHealth >= maxHealth) return;
+	if (currentHealth >= maxHealth) return false;
 
 	if (ShopPoints >= HealCost)
 	{
 		PlayerTowerRef->GetTowerHealthComponent()->HealActor(50);
 		UpdatePoints(ShopPoints - HealCost);
+		return true;
 	} 
+	return false;
 }
 
-void AGameShop::BuyTowerMaxHealth()
+bool AGameShop::BuyTowerMaxHealth()
 {
 	float maxHealth = PlayerTowerRef->GetTowerHealthComponent()->GetMaxHealth();
 	if (maxHealth < MaxHpCap && ShopPoints >= MaxHpCost) 
@@ -114,10 +116,12 @@ void AGameShop::BuyTowerMaxHealth()
 		UpdatePoints(ShopPoints - MaxHpCost);
 		PlayerTowerRef->GetTowerHealthComponent()->SetMaxHealth(maxHealth + 100);
 		GameMode->UIMaxHealthUpdate();
+		return true;
 	}
+	return false;
 }
 
-void AGameShop::BuyFactory()
+bool AGameShop::BuyFactory()
 {
 	if (ShopPoints >= FactoryCost)
 	{
@@ -128,10 +132,12 @@ void AGameShop::BuyFactory()
 		{
 			ManageButtonVisibility();
 		}
+		return true;
 	}
+	return false;
 }
 
-void AGameShop::BuyRadio()
+bool AGameShop::BuyRadio()
 {
 	if (ShopPoints >= RadioCost)
 	{
@@ -142,13 +148,16 @@ void AGameShop::BuyRadio()
 		{
 			ManageButtonVisibility();
 		}
+		return true;
 	}
+	return false;
 }
 
-void AGameShop::BuyBombDrop()
+bool AGameShop::BuyBombDrop()
 {
 	if (ShopPoints >= BombDropCost)
 	{
+		
 		UpdatePoints(ShopPoints - BombDropCost);
 
 		FVector SpawnPosition;
@@ -156,10 +165,12 @@ void AGameShop::BuyBombDrop()
 		SpawnPosition.Y = -1960;
 		SpawnPosition.Z = 1090;
 		AActor* NewBomb = GetWorld()->SpawnActor<AActor>(Bomb, SpawnPosition, FRotator::ZeroRotator);
+		return true;
 	}
+	return false;
 }
 
-void AGameShop::BuyHelicopter()
+bool AGameShop::BuyHelicopter()
 {
 	if (ShopPoints >= HeliCost)
 	{
@@ -173,20 +184,37 @@ void AGameShop::BuyHelicopter()
 			UFunction* Function = Heli->FindFunction(FunctionName);
 			Heli->ProcessEvent(Function, nullptr);
 		}
+		return true;
 	}
+	return false;
+}
+
+bool AGameShop::EndHelicopter()
+{
+	if (Heli)
+	{
+		ManageButtonVisibility();
+		FName FunctionName = TEXT("OnHelicopterTimeEnded");
+
+		UFunction* Function = Heli->FindFunction(FunctionName);
+		Heli->ProcessEvent(Function, nullptr);
+	}
+	return true;
 }
 
 
-void AGameShop::BuyMiniCoil()
+bool AGameShop::BuyMiniCoil()
 {
 	if(ShopPoints >= BuyMiniCoilCost)
 	{
 		PlayerTowerRef->SetControllerToPlaceObject();
 		bIsPlacingObject = true;
 		NumberOfCoils++;
-		if (NumberOfCoils != 2) return;
+		if (NumberOfCoils != 2) return false;
 		UnlockStructure(1);
+		return true;
 	}
+	return false;
 }
 
 void AGameShop::PlaceNewActor()
@@ -251,6 +279,7 @@ void AGameShop::InitializeBuyFunctionMap()
 	BuyFunctionMap.Add("Radio", &AGameShop::BuyRadio);
 	BuyFunctionMap.Add("MakeItRain", &AGameShop::BuyBombDrop);
 	BuyFunctionMap.Add("CallForHelp", &AGameShop::BuyHelicopter);
+	BuyFunctionMap.Add("EndHelicopter", &AGameShop::EndHelicopter);
 }
 
 void AGameShop::ManageButtonVisibility()
@@ -261,7 +290,7 @@ void AGameShop::ManageButtonVisibility()
 	NewUnlockedButton = nullptr;
 }
 
-void AGameShop::BuyAction(FName StructureName, UButton* ClickedButton, UButton* UnlockedButton)
+bool AGameShop::BuyAction(FName StructureName, UButton* ClickedButton, UButton* UnlockedButton)
 {
 	CurrentButton = ClickedButton;
 	NewUnlockedButton = UnlockedButton;
@@ -269,11 +298,12 @@ void AGameShop::BuyAction(FName StructureName, UButton* ClickedButton, UButton* 
 	BuyFunction* BuyFunc = BuyFunctionMap.Find(StructureName);
 	if (BuyFunc)
 	{
-		(this->* * BuyFunc)(); // Dereference and call the function
+		return (this->* * BuyFunc)(); // Dereference and call the function
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Unknown structure: %s"), *StructureName.ToString());
+		return false;
 	}
 }
 

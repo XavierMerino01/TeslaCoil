@@ -123,7 +123,12 @@ void ADefenseTower::SetEnemyTarget()
 
     for (AActor* Enemy : DetectedEnemies)
     {
-        float Distance = FVector::Distance(TowerLocation, Enemy->GetActorLocation());
+        float Distance = FLT_MAX;
+        if (Enemy != nullptr) 
+        {
+            Distance = FVector::Distance(TowerLocation, Enemy->GetActorLocation());
+        }
+
         if (Distance < MinDistance)
         {
             MinDistance = Distance;
