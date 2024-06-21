@@ -115,6 +115,8 @@ void ADefenseTower::SetEnemyTarget()
     AActor* ClosestEnemy = nullptr;
     FVector TowerLocation = GetActorLocation();
 
+    DetectedEnemies.RemoveAll([](AActor* Actor) { return Actor == nullptr || !Actor->IsValidLowLevel(); });
+
     if (DetectedEnemies.Num() == 0) 
     {
         ResetTarget();
@@ -136,8 +138,15 @@ void ADefenseTower::SetEnemyTarget()
         }
     }
 
-    CurrentTarget = ClosestEnemy;
-    bHasTarget = true;
+    if (ClosestEnemy) 
+    {
+        CurrentTarget = ClosestEnemy;
+        bHasTarget = true;
+    }
+    else
+    {
+        ResetTarget();
+    }
     
 }
 
