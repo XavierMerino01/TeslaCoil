@@ -10,13 +10,13 @@ Players control a main Tesla tower, utilizing lightning strikes to fend off wave
 
 # Features
 
-## Tower Defense Dynamics
+####  Tower Defense Dynamics
 Defend against diverse enemy types with unique behaviors and attack patterns.
-## Progression System
+####  Progression System
 Earn points to access a shop for upgrades like tower healing and increased maximum HP.
-## Structures 
+####  Structures 
 Build factories to deploy mini Tesla coils and unlock radios for special abilities like airstrikes and helicopter support.
-## Objective
+####  Objective
 Survive all rounds of enemy waves to achieve victory in this fast-paced, action-oriented gameplay experience.
 
 <div style="display: flex;">
