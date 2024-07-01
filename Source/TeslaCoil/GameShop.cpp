@@ -125,6 +125,7 @@ bool AGameShop::BuyFactory()
 {
 	if (ShopPoints >= FactoryCost)
 	{
+		if (!GameStructures->CanUpgradeFactory()) return false;
 		UpdatePoints(ShopPoints - FactoryCost);
 		GameStructures->ActivateFactory();
 		FactoryCost += 100;

@@ -43,6 +43,11 @@ void AGameStructures::ActivateRadio()
 	}
 }
 
+bool AGameStructures::CanUpgradeFactory()
+{
+	return TileIndex < TilePositions.Num();
+}
+
 
 // Called when the game starts or when spawned
 void AGameStructures::BeginPlay()

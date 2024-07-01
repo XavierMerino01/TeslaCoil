@@ -18,6 +18,8 @@ public:
 	void ActivateFactory();
 	void ActivateRadio();
 
+	bool CanUpgradeFactory();
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<class AActorTile> ObjectTile;
